@@ -9,7 +9,6 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 import com.ua.constant.DatabaseSettings;
 import com.ua.entity.Student;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -17,7 +16,6 @@ public class DatabaseConfig {
 
 	private static Optional<SessionFactory> sessionFactory = Optional.empty();
 
-	
 	public static SessionFactory getSessionFactory() {
 		return sessionFactory.orElseGet(() -> buildSessionFactory());
 	}
