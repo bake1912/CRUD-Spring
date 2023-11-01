@@ -1,69 +1,72 @@
-package com.ua;
+package com.ua.repository;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
-
+import com.ua.config.DatabaseConfig;
+import com.ua.entity.Student;
+import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
+@Slf4j
 public class StudentRepository {
-	private static SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+	
+	private static SessionFactory sessionFactory = DatabaseConfig.getSessionFactory();
 
-	public static List<Student> readData() {
+	public List<Student> readData() {
 		try (Session session = sessionFactory.openSession()) {
-			String hql = "FROM Student";
-			Query<Student> query = session.createQuery(hql, Student.class);
-			return query.getResultList();
+			return session.createQuery("FROM Student", Student.class).list();
 		}
 	}
 
-	public static Student readById(String id) {
+	public Student readById(String id) {
 		try (Session session = sessionFactory.openSession()) {
-			String hql = "FROM Student WHERE id=" + id;
-			Query<Student> query = session.createQuery(hql, Student.class);
-			return query.getSingleResult();
-		} 
+			return session.get(Student.class, id);
+		}
 	}
 
-	public static void insertRow(Student student) {
+	public Student insertRow(Student student) {
 		Transaction transaction = null;
 		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
 			session.save(student);
 			transaction.commit();
-			System.out.println("Student inserted successfully.");
+			log.info("Student inserted successfully.");
+			return student;
 		} catch (HibernateException e) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
 			e.printStackTrace();
+			return null;
 		}
 	}
 
-	public static void updateRow(Student student) {
+	public Student updateRow(Student student) {
 		Transaction transaction = null;
 		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
 			session.update(student);
 			transaction.commit();
-			System.out.println("Student updated successfully.");
+			log.info("Student updated successfully.");
+			return student;
 		} catch (HibernateException e) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
 			e.printStackTrace();
+			return null;
 		}
 	}
 
-	public static void deleteRow(Student student) {
+	public void deleteRow(Student student) {
 		Transaction transaction = null;
 		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
 			session.delete(student);
 			transaction.commit();
-			System.out.println("Student deleted successfully.");
+			log.info("Student deleted successfully.");
 		} catch (HibernateException e) {
 			if (transaction != null) {
 				transaction.rollback();
