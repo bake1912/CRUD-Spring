@@ -1,7 +1,7 @@
 package com.ua.constant;
 
 public enum DatabaseSettings {
-	DRIVER("org.postgresql.Driver"),
+    DRIVER("org.postgresql.Driver"),
     URL("jdbc:postgresql://localhost:5436/postgres"),
     USER("postgres"),
     PASSWORD("password"),
