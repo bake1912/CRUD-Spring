@@ -7,16 +7,19 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
+import org.springframework.context.annotation.Bean;
+
 import com.ua.constant.DatabaseSettings;
 import com.ua.entity.Student;
 import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
+@org.springframework.context.annotation.Configuration
 public class DatabaseConfig {
 
 	private static Optional<SessionFactory> sessionFactory = Optional.empty();
 
-	public static SessionFactory getSessionFactory() {
+	@Bean
+	SessionFactory sessionFactory() {
 		return sessionFactory.orElseGet(() -> buildSessionFactory());
 	}
 

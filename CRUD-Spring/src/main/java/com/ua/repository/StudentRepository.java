@@ -4,16 +4,21 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import com.ua.config.DatabaseConfig;
+import org.springframework.stereotype.Repository;
+
 import com.ua.entity.Student;
+
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 @Slf4j
+@AllArgsConstructor
+@Repository
 public class StudentRepository {
 	
-	private static SessionFactory sessionFactory = DatabaseConfig.getSessionFactory();
-
+	private SessionFactory sessionFactory ;
+	
 	public List<Student> readData() {
 		try (Session session = sessionFactory.openSession()) {
 			return session.createQuery("FROM Student", Student.class).list();

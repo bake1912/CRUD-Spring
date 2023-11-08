@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ua.entity.Student;
 import com.ua.repository.StudentRepository;
 
+import lombok.AllArgsConstructor;
+
 @RestController
+@AllArgsConstructor
 public class StudentController {
 	
-	private StudentRepository studentRepository = new StudentRepository();
-
+	private StudentRepository studentRepository;
+	
 	@GetMapping("/student")
 	public List<Student> getStudents() {
 		return studentRepository.readData();
