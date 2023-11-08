@@ -1,4 +1,4 @@
-package com.ua;
+package com.ua.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,11 +8,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "Student")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Component
 public class Student {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +33,8 @@ public class Student {
 
 	@Column(name = "middlename")
 	private String middleName;
-
-	public Student() {
-
+	
+	public Student(Integer id) {
+		this.id = id;
 	}
 }
