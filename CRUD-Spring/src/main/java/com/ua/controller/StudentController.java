@@ -12,35 +12,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.ua.entity.Student;
 import com.ua.repository.StudentRepository;
+import com.ua.transformer.StudentTransformer;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @RestController
 public class StudentController {
-	
-	@Autowired
+
 	private StudentRepository studentRepository;
 
 	@GetMapping("/student")
-	public List<Student> getStudents() throws SQLException {
-		return studentRepository.readData();
+	public List<Student> getStudents() {
+		return studentRepository.getAll();
 	}
 
 	@GetMapping("/student/{id}")
 	public Student getStudent(@PathVariable("id") String id) {
-		return studentRepository.readById(Integer.parseInt(id));
+		return studentRepository.get(Integer.parseInt(id));
 	}
 
 	@PostMapping("/student")
 	public Student createStudent(@RequestBody Student student) {
-		return studentRepository.createStudent(student);
+		return studentRepository.create(student);
 	}
 
-	@PutMapping("/student")
-	public Student updateStudent(@RequestBody Student student) {
-		return studentRepository.updateStudent(student);
+	@PutMapping("/student/{id}")
+	public Student updateStudent(@PathVariable Integer id, @RequestBody Student student) {
+		Student transformedStudent = new StudentTransformer().transformStudent(id, student);
+		return studentRepository.update(transformedStudent);
 	}
 
 	@DeleteMapping("/student/{id}")
 	public void deleteStudent(@PathVariable("id") String id) {
-		studentRepository.deleteStudent(Integer.parseInt(id));
+		studentRepository.delete(Integer.parseInt(id));
 	}
 }
