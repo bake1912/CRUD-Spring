@@ -1,82 +1,50 @@
 package com.ua.repository;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.jooq.DSLContext;
+import org.jooq.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import com.ua.entity.Student;
+import com.ua.jooq.Tables;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import java.util.List;
 
-@Slf4j
+import java.util.ArrayList;
+import java.util.List;
+import org.jooq.Record;
+
 @AllArgsConstructor
 @Repository
 public class StudentRepository {
-	
-	private SessionFactory sessionFactory ;
-	
-	public List<Student> readData() {
-		try (Session session = sessionFactory.openSession()) {
-			return session.createQuery("FROM Student", Student.class).list();
-		}
+
+	private DSLContext dsl;
+
+	public List<Student> getAll() {
+		List<Student> students = dsl.select().from(Tables.STUDENT).fetchInto(Student.class);
+		return students;
 	}
 
-	public Student readById(String id) {
-		try (Session session = sessionFactory.openSession()) {
-			return session.get(Student.class, id);
-		}
+	public Student get(Integer id) {
+		Student student = dsl.select().from(Tables.STUDENT).where(Tables.STUDENT.ID.eq(id)).fetchOneInto(Student.class);
+		return student;
 	}
 
-	public Student insertRow(Student student) {
-		Transaction transaction = null;
-		try (Session session = sessionFactory.openSession()) {
-			transaction = session.beginTransaction();
-			session.save(student);
-			transaction.commit();
-			log.info("Student inserted successfully.");
-			return student;
-		} catch (HibernateException e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			e.printStackTrace();
-			return null;
-		}
+	public Student create(Student student) {
+		Student returnedStudent = dsl.insertInto(Tables.STUDENT).set(Tables.STUDENT.FIRSTNAME, student.getFirstName())
+				.set(Tables.STUDENT.LASTNAME, student.getLastName())
+				.set(Tables.STUDENT.MIDDLENAME, student.getMiddleName()).returning().fetchOneInto(Student.class);
+		return returnedStudent;
 	}
 
-	public Student updateRow(Student student) {
-		Transaction transaction = null;
-		try (Session session = sessionFactory.openSession()) {
-			transaction = session.beginTransaction();
-			session.update(student);
-			transaction.commit();
-			log.info("Student updated successfully.");
-			return student;
-		} catch (HibernateException e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			e.printStackTrace();
-			return null;
-		}
+	public void delete(Integer id) {
+		dsl.delete(Tables.STUDENT).where(Tables.STUDENT.ID.eq(id)).execute();
 	}
 
-	public void deleteRow(Student student) {
-		Transaction transaction = null;
-		try (Session session = sessionFactory.openSession()) {
-			transaction = session.beginTransaction();
-			session.delete(student);
-			transaction.commit();
-			log.info("Student deleted successfully.");
-		} catch (HibernateException e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			e.printStackTrace();
-		}
+	public Student update(Student student) {
+		Student returnedStudent = dsl.update(Tables.STUDENT).set(Tables.STUDENT.FIRSTNAME, student.getFirstName())
+				.set(Tables.STUDENT.LASTNAME, student.getLastName())
+				.set(Tables.STUDENT.MIDDLENAME, student.getMiddleName()).where(Tables.STUDENT.ID.eq(student.getId()))
+				.returning().fetchOneInto(Student.class);
+		return returnedStudent;
 	}
 }
