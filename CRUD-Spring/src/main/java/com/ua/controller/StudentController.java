@@ -39,7 +39,7 @@ public class StudentController {
 
 	@PutMapping("/student/{id}")
 	public Student updateStudent(@PathVariable Integer id, @RequestBody Student student) {
-		Student transformedStudent = new StudentTransformer().transformStudent(id, student);
+		Student transformedStudent = StudentTransformer.transformStudent(id, student);
 		return studentRepository.update(transformedStudent);
 	}
 

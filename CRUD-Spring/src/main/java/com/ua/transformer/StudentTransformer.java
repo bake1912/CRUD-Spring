@@ -4,7 +4,7 @@ import com.ua.entity.Student;
 
 public class StudentTransformer {
 	
-	public Student transformStudent(Integer id, Student student) {
+	public static Student transformStudent(Integer id, Student student) {
 		student.setId(id);
 		return student;
 	}
